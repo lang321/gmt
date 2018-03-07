@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       					   http://www.springframework.org/schema/beans/spring-beans.xsd
+       					   http://www.springframework.org/schema/aop 
+       					   http://www.springframework.org/schema/aop/spring-aop.xsd
+       					   http://www.springframework.org/schema/context 
+       					   http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 1 datasource -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl" value="jdbc:mysql://47.94.157.43:3306/spring"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="zx@123"></property>
+	</bean>
+
+	<!-- 配置LocalSessionFactoryBean，获取SessionFactory （HibernateTemplate底层也是使用Session）
+	 	数据源：
+	 	hibernateProperties:
+	 	导入映射entity
+	 	mappingDirectoryLocations
+	 -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<!--指定进行了Hibernate注解开发的包，方便框架进行扫描设置-->
+		<property name="packagesToScan">
+			<list>
+				<value>com.hgblogs.entity</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 注册hibernateTemplate -->
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<!-- 注入模板 -->
+	<bean id="userDao" class="com.hgblogs.dao.UserDao">
+		<property name="hibernateTemplate" ref="hibernateTemplate"></property>
+	</bean>
+
+	<!-- 事务管理 -->
+	<!-- 事务管理器 -->
+	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 事务详情 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="addUser" isolation="DEFAULT" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="pc" expression="execution(* com.hgblogs.service.*.*(..))"></aop:pointcut>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pc"></aop:advisor>
+	</aop:config>
+
+	<!-- 自动扫描 -->
+	<context:component-scan base-package="com.hgblogs">
+		<!-- 扫描时跳过 @Controller 注解的JAVA类（控制器） -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+</beans>
