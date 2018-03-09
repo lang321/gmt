@@ -10,6 +10,9 @@ String htmlData = request.getParameter("content1") != null ? request.getParamete
 	<title>KindEditor JSP</title>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/kindeditor-master/themes/default/default.css" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/kindeditor-master/plugins/code/prettify.css" />
+
+
+	<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 	<script charset="utf-8" src="${pageContext.request.contextPath}/resource/kindeditor-master/kindeditor-all.js"></script>
 	<script charset="utf-8" src="${pageContext.request.contextPath}/resource/kindeditor-master/lang/zh-CN.js"></script>
 	<script charset="utf-8" src="${pageContext.request.contextPath}/resource/kindeditor-master/plugins/code/prettify.js"></script>
@@ -33,6 +36,12 @@ String htmlData = request.getParameter("content1") != null ? request.getParamete
 				}
 			});
 			prettyPrint();
+            editor1.html('<p>\n' +
+                '\t<img src="/images/image/20180309/20180309185054_144.png" />发生发顺丰\n' +
+                '</p>\n' +
+                '<p>\n' +
+                '\t法法师\n' +
+                '</p>');
 		});
 	</script>
 </head>
@@ -43,6 +52,11 @@ String htmlData = request.getParameter("content1") != null ? request.getParamete
 		<br />
 		<input type="submit" name="button" value="提交内容" /> (提交快捷键: Ctrl + Enter)
 	</form>
+	<script>
+//		$(function(){
+//		    $("body.ke-content").append($("<img src=\"/gmt/images/image/20180309/20180309200113_432.png\" alt=\"\" /><br />"));
+//		})
+	</script>
 </body>
 </html>
 <%!

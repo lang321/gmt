@@ -46,6 +46,10 @@ public class KindEditorController {
     public String demo(){
         return "edit/demo.jsp";
     }
+    @RequestMapping("upload")
+    public String upload(){
+        return "edit/demo.jsp";
+    }
 
     @RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
     @ResponseBody
