@@ -37,7 +37,7 @@
 		<!--指定进行了Hibernate注解开发的包，方便框架进行扫描设置-->
 		<property name="packagesToScan">
 			<list>
-				<value>com.hgblogs.entity</value>
+				<value>com.gmt.entity</value>
 			</list>
 		</property>
 	</bean>
@@ -47,7 +47,7 @@
 	</bean>
 
 	<!-- 注入模板 -->
-	<bean id="userDao" class="com.hgblogs.dao.UserDao">
+	<bean id="userDao" class="com.gmt.dao.UserDao">
 		<property name="hibernateTemplate" ref="hibernateTemplate"></property>
 	</bean>
 
@@ -63,14 +63,21 @@
 		</tx:attributes>
 	</tx:advice>
 	<aop:config proxy-target-class="true">
-		<aop:pointcut id="pc" expression="execution(* com.hgblogs.service.*.*(..))"></aop:pointcut>
+		<aop:pointcut id="pc" expression="execution(* com.gmt.service.*.*(..))"></aop:pointcut>
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="pc"></aop:advisor>
 	</aop:config>
 
 	<!-- 自动扫描 -->
-	<context:component-scan base-package="com.hgblogs">
+	<context:component-scan base-package="com.gmt">
 		<!-- 扫描时跳过 @Controller 注解的JAVA类（控制器） -->
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
+
+	<!---文件下载，处理器-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8"/>
+		<!-- maxUploadSize设置-1 不限制文件大小 -->
+		<property name="maxUploadSize" value="-1"/>
+	</bean>
 
 </beans>

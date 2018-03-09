@@ -27,5 +27,6 @@ public class TestSpring {
         user.setPassword("123");
 //        userService.addUser(user);
         userService.updatePwd();
+
     }
 }

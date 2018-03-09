@@ -23,7 +23,7 @@ public class UserDao {
     public void addUser(Users user){
         System.out.println("dao add user...");
 //        hibernateTemplate.save(user);
-        List<Users> usersList = (List<Users>) hibernateTemplate.find("from com.hgblogs.entity.Users");
+        List<Users> usersList = (List<Users>) hibernateTemplate.find("from com.gmt.entity.Users");
 
         System.out.println("");
     }
